@@ -1,8 +1,9 @@
-package cache2go_test
+package cache2go
 
 import (
 	"fmt"
 	"lucky-golang/cache"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -64,4 +65,61 @@ func TestCache(t *testing.T) {
 
 	// And wipe the entire cache table.
 	cache.Flush()
+}
+
+// test to load data from the cache
+func TestDataLoader(t *testing.T) {
+
+	cache := cache2go.Cache("myCache")
+
+	//if the key not exists in the cache ,so will fetch the key  form the loaddata
+	cache.SetDataLoader(func(key interface{}, args ...interface{}) *cache2go.CacheItem {
+
+		val := "this is a test with key" + key.(string)
+		item := cache2go.NewCacheItem(key, 0, val)
+
+		return item
+	})
+
+	for i := 0; i < 10; i++ {
+		res, err := cache.Value("somekey_" + strconv.Itoa(i))
+		if err == nil {
+			fmt.Println("Found value in cazhe", res.Data())
+		} else {
+			fmt.Println("Error retrieving value from cache:", err)
+		}
+	}
+}
+
+func TestCallback(t *testing.T) {
+
+	cache := cache2go.Cache("mycache")
+
+	cache.SetAddedItemCallback(func(entry *cache2go.CacheItem) {
+		fmt.Println("Added :", entry.Key(), entry.Data(), entry.CreatedOn())
+	})
+
+	cache.SetAboutToDeleteItemCallback(func(entry *cache2go.CacheItem) {
+		fmt.Println("Deleting:", entry.Key(), entry.Data(), entry.CreatedOn())
+	})
+
+	cache.Add("some key ", 0, "this is a test")
+
+	res, err := cache.Value("some key")
+	if err == nil {
+		fmt.Println("Found value in the cache", res.Data())
+	}
+
+	fmt.Println("Error retrieving value from cache:", err)
+
+	cache.Delete("some key")
+	// Caching a new item that expires in 3 seconds
+	res = cache.Add("anotherKey", 3*time.Second, "This is another test")
+
+	// This callback will be triggered when the item is about to expire
+	res.SetAboutToExpireCallback(func(key interface{}) {
+		fmt.Println("About to expire:", key.(string))
+	})
+
+	time.Sleep(5 * time.Second)
 }

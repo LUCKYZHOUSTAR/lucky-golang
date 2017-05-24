@@ -8,6 +8,7 @@
 package cache2go
 
 import (
+	"fmt"
 	"log"
 	"sort"
 	"sync"
@@ -106,7 +107,7 @@ func (table *CacheTable) expirationCheck() {
 
 	// To be more accurate with timers, we would need to update 'now' on every
 	// loop iteration. Not sure it's really efficient though.
-	now := time.Now()
+
 	smallestDuration := 0 * time.Second
 	for key, item := range items {
 		// Cache values so we don't keep blocking the mutex.
@@ -118,6 +119,8 @@ func (table *CacheTable) expirationCheck() {
 		if lifeSpan == 0 {
 			continue
 		}
+		//to be more accurate to calcute the time
+		now := time.Now()
 		if now.Sub(accessedOn) >= lifeSpan {
 			// Item has excessed its lifespan.
 			table.Delete(key)
