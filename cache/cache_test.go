@@ -1,15 +1,15 @@
-package cache2go
+package cache2go_test
 
 import (
 	"fmt"
-	"github.com/muesli/cache2go"
+	"lucky-golang/cache"
 	"testing"
 	"time"
 )
 
 // Keys & values in cache2go can be off arbitrary types, e.g. a struct.
 type myStruct struct {
-	text     string
+	text string
 
 	moreData []byte
 }
