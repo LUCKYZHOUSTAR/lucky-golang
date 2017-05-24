@@ -8,7 +8,6 @@
 package cache2go
 
 import (
-	"fmt"
 	"log"
 	"sort"
 	"sync"
