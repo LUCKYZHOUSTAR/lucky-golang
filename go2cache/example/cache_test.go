@@ -1,14 +1,15 @@
-package cache2go
+package example
 
 import (
 	"fmt"
+	"github.com/lucky-golang/go2cache"
 	"lucky-golang/cache"
 	"strconv"
 	"testing"
 	"time"
 )
 
-// Keys & values in cache2go can be off arbitrary types, e.g. a struct.
+// Keys & values in go2cache can be off arbitrary types, e.g. a struct.
 type myStruct struct {
 	text string
 
@@ -30,7 +31,8 @@ http://blog.csdn.net/samxx8/article/details/46894587
 */
 func TestCache(t *testing.T) {
 	// Accessing a new cache table for the first time will create it.
-	cache := cache2go.Cache("myCache")
+
+	cache := go2cache.Cache("myCache")
 
 	// We will put a new item in the cache. It will expire after
 	// not being accessed via Value(key) for more than 5 seconds.
@@ -55,8 +57,8 @@ func TestCache(t *testing.T) {
 	// Add another item that never expires.
 	cache.Add("someKey", 0, &val)
 
-	// cache2go supports a few handy callbacks and loading mechanisms.
-	cache.SetAboutToDeleteItemCallback(func(e *cache2go.CacheItem) {
+	// go2cache supports a few handy callbacks and loading mechanisms.
+	cache.SetAboutToDeleteItemCallback(func(e *go2cache.CacheItem) {
 		fmt.Println("Deleting:", e.Key(), e.Data().(*myStruct).text, e.CreatedOn())
 	})
 
@@ -70,13 +72,13 @@ func TestCache(t *testing.T) {
 // test to load data from the cache
 func TestDataLoader(t *testing.T) {
 
-	cache := cache2go.Cache("myCache")
+	cache := go2cache.Cache("myCache")
 
 	//if the key not exists in the cache ,so will fetch the key  form the loaddata
-	cache.SetDataLoader(func(key interface{}, args ...interface{}) *cache2go.CacheItem {
+	cache.SetDataLoader(func(key interface{}, args ...interface{}) *go2cache.CacheItem {
 
 		val := "this is a test with key" + key.(string)
-		item := cache2go.NewCacheItem(key, 0, val)
+		item := go2cache.NewCacheItem(key, 0, val)
 
 		return item
 	})
@@ -93,13 +95,13 @@ func TestDataLoader(t *testing.T) {
 
 func TestCallback(t *testing.T) {
 
-	cache := cache2go.Cache("mycache")
+	cache := go2cache.Cache("mycache")
 
-	cache.SetAddedItemCallback(func(entry *cache2go.CacheItem) {
+	cache.SetAddedItemCallback(func(entry *go2cache.CacheItem) {
 		fmt.Println("Added :", entry.Key(), entry.Data(), entry.CreatedOn())
 	})
 
-	cache.SetAboutToDeleteItemCallback(func(entry *cache2go.CacheItem) {
+	cache.SetAboutToDeleteItemCallback(func(entry *go2cache.CacheItem) {
 		fmt.Println("Deleting:", entry.Key(), entry.Data(), entry.CreatedOn())
 	})
 
