@@ -1,9 +1,8 @@
-package example
+package go2cache__test
 
 import (
 	"fmt"
-	"github.com/lucky-golang/go2cache"
-	"lucky-golang/cache"
+	"lucky-golang/go2cache"
 	"strconv"
 	"testing"
 	"time"
