@@ -2,7 +2,7 @@ package go2cache__test
 
 import (
 	"fmt"
-	"lucky-golang/go2cache"
+	"go/go2cache"
 	"strconv"
 	"testing"
 	"time"
